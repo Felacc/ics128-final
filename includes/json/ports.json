@@ -1,0 +1,520 @@
+[
+  {
+    "name": "Port of Shanghai",
+    "coordinates": [
+      31.2304,
+      121.4737
+    ]
+  },
+  {
+    "name": "Port of Singapore",
+    "coordinates": [
+      1.2644,
+      103.82
+    ]
+  },
+  {
+    "name": "Port of Rotterdam",
+    "coordinates": [
+      51.955,
+      4.142
+    ]
+  },
+  {
+    "name": "Port of Ningbo-Zhoushan",
+    "coordinates": [
+      29.87,
+      121.544
+    ]
+  },
+  {
+    "name": "Port of Guangzhou",
+    "coordinates": [
+      23.11,
+      113.33
+    ]
+  },
+  {
+    "name": "Port of Busan",
+    "coordinates": [
+      35.0951,
+      129.0403
+    ]
+  },
+  {
+    "name": "Port of Hong Kong",
+    "coordinates": [
+      22.308,
+      114.225
+    ]
+  },
+  {
+    "name": "Port of Qingdao",
+    "coordinates": [
+      36.0671,
+      120.3826
+    ]
+  },
+  {
+    "name": "Port of Tianjin",
+    "coordinates": [
+      39.089,
+      117.2036
+    ]
+  },
+  {
+    "name": "Port of Dubai (Jebel Ali)",
+    "coordinates": [
+      25.0268,
+      55.0591
+    ]
+  },
+  {
+    "name": "Port of Antwerp",
+    "coordinates": [
+      51.2637,
+      4.3997
+    ]
+  },
+  {
+    "name": "Port of Hamburg",
+    "coordinates": [
+      53.5461,
+      9.9661
+    ]
+  },
+  {
+    "name": "Port of Los Angeles",
+    "coordinates": [
+      33.7392,
+      -118.2615
+    ]
+  },
+  {
+    "name": "Port of Long Beach",
+    "coordinates": [
+      33.7683,
+      -118.1956
+    ]
+  },
+  {
+    "name": "Port of New York and New Jersey",
+    "coordinates": [
+      40.684,
+      -74.006
+    ]
+  },
+  {
+    "name": "Port of Tanjung Pelepas",
+    "coordinates": [
+      1.3667,
+      103.5333
+    ]
+  },
+  {
+    "name": "Port of Colombo",
+    "coordinates": [
+      6.9271,
+      79.8612
+    ]
+  },
+  {
+    "name": "Port of Santos",
+    "coordinates": [
+      -23.9675,
+      -46.3289
+    ]
+  },
+  {
+    "name": "Port of Laem Chabang",
+    "coordinates": [
+      13.0833,
+      100.8833
+    ]
+  },
+  {
+    "name": "Port of Algeciras",
+    "coordinates": [
+      36.1408,
+      -5.4562
+    ]
+  },
+  {
+    "name": "Port of Felixstowe",
+    "coordinates": [
+      51.96,
+      1.3
+    ]
+  },
+  {
+    "name": "Port of Valencia",
+    "coordinates": [
+      39.4576,
+      -0.3569
+    ]
+  },
+  {
+    "name": "Port of Genoa",
+    "coordinates": [
+      44.4048,
+      8.9444
+    ]
+  },
+  {
+    "name": "Port of Vancouver",
+    "coordinates": [
+      49.2871,
+      -123.1207
+    ]
+  },
+  {
+    "name": "Port of Melbourne",
+    "coordinates": [
+      -37.8142,
+      144.9632
+    ]
+  },
+  {
+    "name": "Port of Sydney",
+    "coordinates": [
+      -33.8688,
+      151.2093
+    ]
+  },
+  {
+    "name": "Port of Durban",
+    "coordinates": [
+      -29.8579,
+      31.0292
+    ]
+  },
+  {
+    "name": "Port of Cape Town",
+    "coordinates": [
+      -33.918,
+      18.4219
+    ]
+  },
+  {
+    "name": "Port of Maputo",
+    "coordinates": [
+      -25.9653,
+      32.5892
+    ]
+  },
+  {
+    "name": "Port of Mombasa",
+    "coordinates": [
+      -4.0435,
+      39.6682
+    ]
+  },
+  {
+    "name": "Port of Jeddah",
+    "coordinates": [
+      21.4858,
+      39.1925
+    ]
+  },
+  {
+    "name": "Port of Beirut",
+    "coordinates": [
+      33.9011,
+      35.5018
+    ]
+  },
+  {
+    "name": "Port of Alexandria",
+    "coordinates": [
+      31.2156,
+      29.9553
+    ]
+  },
+  {
+    "name": "Port of Lagos",
+    "coordinates": [
+      6.5244,
+      3.3792
+    ]
+  },
+  {
+    "name": "Port of Manila",
+    "coordinates": [
+      14.5995,
+      120.9842
+    ]
+  },
+  {
+    "name": "Port of Ho Chi Minh City",
+    "coordinates": [
+      10.7769,
+      106.7009
+    ]
+  },
+  {
+    "name": "Port of Jakarta",
+    "coordinates": [
+      -6.2088,
+      106.8456
+    ]
+  },
+  {
+    "name": "Port of Bangkok",
+    "coordinates": [
+      13.7563,
+      100.5018
+    ]
+  },
+  {
+    "name": "Port of Karachi",
+    "coordinates": [
+      24.8607,
+      67.0011
+    ]
+  },
+  {
+    "name": "Port of Chittagong",
+    "coordinates": [
+      22.3569,
+      91.7832
+    ]
+  },
+  {
+    "name": "Port of Colombo",
+    "coordinates": [
+      6.9271,
+      79.8612
+    ]
+  },
+  {
+    "name": "Port of Helsinki",
+    "coordinates": [
+      60.1699,
+      24.9384
+    ]
+  },
+  {
+    "name": "Port of Tallinn",
+    "coordinates": [
+      59.437,
+      24.7536
+    ]
+  },
+  {
+    "name": "Port of Oslo",
+    "coordinates": [
+      59.9139,
+      10.7522
+    ]
+  },
+  {
+    "name": "Port of Stockholm",
+    "coordinates": [
+      59.3293,
+      18.0686
+    ]
+  },
+  {
+    "name": "Port of Saint Petersburg",
+    "coordinates": [
+      59.9311,
+      30.3609
+    ]
+  },
+  {
+    "name": "Port of Reykjavik",
+    "coordinates": [
+      64.1466,
+      -21.9426
+    ]
+  },
+  {
+    "name": "Port of Halifax",
+    "coordinates": [
+      44.6488,
+      -63.5752
+    ]
+  },
+  {
+    "name": "Port of Boston",
+    "coordinates": [
+      42.3601,
+      -71.0589
+    ]
+  },
+  {
+    "name": "Bora Bora",
+    "coordinates": [
+      -16.5004,
+      -151.7415
+    ]
+  },
+  {
+    "name": "Fiji",
+    "coordinates": [
+      -17.7134,
+      178.065
+    ]
+  },
+  {
+    "name": "Maldives",
+    "coordinates": [
+      3.2028,
+      73.2207
+    ]
+  },
+  {
+    "name": "Maui",
+    "coordinates": [
+      20.7984,
+      -156.3319
+    ]
+  },
+  {
+    "name": "Oahu",
+    "coordinates": [
+      21.4389,
+      -158.0001
+    ]
+  },
+  {
+    "name": "Bali",
+    "coordinates": [
+      -8.3405,
+      115.092
+    ]
+  },
+  {
+    "name": "Phuket",
+    "coordinates": [
+      7.8804,
+      98.3923
+    ]
+  },
+  {
+    "name": "Seychelles",
+    "coordinates": [
+      -4.6796,
+      55.492
+    ]
+  },
+  {
+    "name": "Mauritius",
+    "coordinates": [
+      -20.3484,
+      57.5522
+    ]
+  },
+  {
+    "name": "Zanzibar",
+    "coordinates": [
+      -6.1659,
+      39.2026
+    ]
+  },
+  {
+    "name": "Cook Islands",
+    "coordinates": [
+      -21.2367,
+      -159.7777
+    ]
+  },
+  {
+    "name": "Palawan",
+    "coordinates": [
+      9.8349,
+      118.7384
+    ]
+  },
+  {
+    "name": "Tahiti",
+    "coordinates": [
+      -17.6509,
+      -149.426
+    ]
+  },
+  {
+    "name": "R\u00e9union",
+    "coordinates": [
+      -21.1151,
+      55.5364
+    ]
+  },
+  {
+    "name": "Gal\u00e1pagos",
+    "coordinates": [
+      -0.9538,
+      -90.9656
+    ]
+  },
+  {
+    "name": "Aruba",
+    "coordinates": [
+      12.5211,
+      -69.9683
+    ]
+  },
+  {
+    "name": "Barbados",
+    "coordinates": [
+      13.1939,
+      -59.5432
+    ]
+  },
+  {
+    "name": "St. Lucia",
+    "coordinates": [
+      13.9094,
+      -60.9789
+    ]
+  },
+  {
+    "name": "Dominica",
+    "coordinates": [
+      15.414,
+      -61.37
+    ]
+  },
+  {
+    "name": "Grenada",
+    "coordinates": [
+      12.1165,
+      -61.679
+    ]
+  },
+  {
+    "name": "Bermuda",
+    "coordinates": [
+      32.3078,
+      -64.7505
+    ]
+  },
+  {
+    "name": "Comoros",
+    "coordinates": [
+      -11.6455,
+      43.3333
+    ]
+  },
+  {
+    "name": "Samoa",
+    "coordinates": [
+      -13.759,
+      -172.1046
+    ]
+  },
+  {
+    "name": "Tonga",
+    "coordinates": [
+      -21.179,
+      -175.1982
+    ]
+  },
+  {
+    "name": "New Caledonia",
+    "coordinates": [
+      -21.299,
+      165.3
+    ]
+  }
+]

@@ -28,14 +28,23 @@ async function getPorts() {
     if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
     }
-
     const ports = await response.json();
     return ports;
+}
+
+async function getVessels() {
+    const response = await fetch("includes/json/vessels.json");
+    if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+    }
+    const vessels = await response.json();
+    return vessels;
 }
 
 async function loadMap() {
     const { userLat, userLong } = await getUserCoords();
     const ports = await getPorts();
+    const vessels = await getVessels();
 
     let tripStarted = false; // used to keep track of if a user has started a trip for controlling state of marker popups
     let latlngsForTrip = []; // used to keep track of marker coords (used to draw leaflet polyline)
@@ -90,9 +99,8 @@ async function loadMap() {
             for (stop of stops) { // remove stop markers
                 stop.remove();
             } 
-            // the if is not needed for this statement, but it feels nice to know that it won't run the statement if 
-            console.log($("#distance"));
             $("#distance").remove(); // remove distance displayed from previous trip (if it's there)
+            $("#capableVessels").remove(); // remove list of capable vessels
             tripStarted = true;
             startTripBtn.prop("disabled", true);
             addStopBtn.prop("disabled", false);
@@ -115,7 +123,19 @@ async function loadMap() {
             latlngsForTrip.push(markerLatlng);
             tripPolyline.setLatLngs(latlngsForTrip);
             tripDistance += map.distance(latlngsForTrip[latlngsForTrip.length - 2], latlngsForTrip[latlngsForTrip.length - 1]);
-            $("body").append(`<h1 id="distance">${tripDistance / 1000} km </h1>`); //km
+            $("body").append(`<h1 id="distance">${tripDistance * 0.000621371} miles</h1>`); 
+
+            $("body").append(`<div id="capableVessels"><h3>Capable Vessels:</h3></div>`);
+            let capableVessels = [];
+            for (vessel of vessels) {
+                const maxDistanceInMiles = vessel.max_travel_distance_nautical_miles;
+                tripDistanceInMiles = tripDistance * 0.000621371;
+                if (maxDistanceInMiles == "Unlimited" || maxDistanceInMiles >= tripDistanceInMiles) {
+                    capableVessels.push(vessel);
+                    $("#capableVessels").append(`<p>${vessel.name}</p>`);
+                }
+                
+            }
         });
     });
 
@@ -183,6 +203,12 @@ async function loadMap() {
 
 
             }
+        } else {
+            // a random thought:
+            // update the map visuals so that there is only one boat icon on whatever port the trip is started at
+            // the boat travels along the polyline of the trip
+            // if that polyline happens to be across land... like from van to boston
+            // turn the boat into a car before animating it...
         }
     });
 }

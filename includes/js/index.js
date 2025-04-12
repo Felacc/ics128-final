@@ -41,6 +41,29 @@ async function getVessels() {
     return vessels;
 }
 
+async function getWeatherData(latitude, longitude) {
+    // not my api key
+    // note to self: if you do start using your own use a proxy server or something (before you commit)
+    const API_KEY = "408910547897fd9d7029410128827a6d";
+    const UNITS = "metric";
+
+    const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=${UNITS}&appid=${API_KEY}`;
+
+    try {
+        const response = await fetch(URL);
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        return data;
+    } catch (e) {
+        console.error(`An error occurred while fetching weather data: ${e}`);
+    }
+}
+
 async function loadMap() {
     const { userLat, userLong } = await getUserCoords();
     const ports = await getPorts();
@@ -74,8 +97,10 @@ async function loadMap() {
             const disabledStartBtn = tripStarted ? "disabled" : "";
             const disabledAddStopBtn = tripStarted ? "" : "disabled";
             const disabledEndBtn = tripStarted ? "" : "disabled";
+
             return `
                 <h5>${port.name}</h5>
+                <div id="weather">Loading weather...</div>
                 <button type="button" id="startTripBtn" class="btn btn-primary" ${disabledStartBtn}>Start Trip</button>
                 <button type="button" id="addStopBtn" class="btn btn-primary" ${disabledAddStopBtn}>Add Stop</button>
                 <button type="button" id="endTripBtn" class="btn btn-primary" ${disabledEndBtn}>End Trip</button>
@@ -92,13 +117,30 @@ async function loadMap() {
         const addStopBtn = $(popup).find("#addStopBtn");
         const endTripBtn = $(popup).find("#endTripBtn");
 
+        // Async IIFE from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/async_function#async_iife
+        // Add weather data to popup
+        (async () => {
+            const weatherData = await getWeatherData(markerLatlng.lat, markerLatlng.lng);
+            console.log(weatherData);
+            $(popup).find("#weather").html(`
+                <div class="d-flex">
+                    <div id="weatherLeft"><img src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png"></div>
+                    <div id"weatherRight" class="d-flex flex-column justify-content-center align-items-center">
+                        ${weatherData.main.temp} &deg;C 
+                        <br>
+                        ${weatherData.weather[0].main}
+                    </div>
+                </div>
+                `);
+        })();
+
         startTripBtn.on("click", () => {
             latlngsForTrip = []; // empty array from previous trip
-            if (tripPolyline) {tripPolyline.setLatLngs([]);} // reset polyline
+            if (tripPolyline) { tripPolyline.setLatLngs([]); } // reset polyline
             tripDistance = 0; // reset distance
             for (stop of stops) { // remove stop markers
                 stop.remove();
-            } 
+            }
             $("#distance").remove(); // remove distance displayed from previous trip (if it's there)
             $("#capableVessels").remove(); // remove list of capable vessels
             tripStarted = true;
@@ -106,7 +148,7 @@ async function loadMap() {
             addStopBtn.prop("disabled", false);
             endTripBtn.prop("disabled", false);
             latlngsForTrip.push(markerLatlng);
-            tripPolyline = L.polyline(latlngsForTrip, {color: "red"}).addTo(map);
+            tripPolyline = L.polyline(latlngsForTrip, { color: "red" }).addTo(map);
         });
 
         addStopBtn.on("click", () => {
@@ -123,7 +165,7 @@ async function loadMap() {
             latlngsForTrip.push(markerLatlng);
             tripPolyline.setLatLngs(latlngsForTrip);
             tripDistance += map.distance(latlngsForTrip[latlngsForTrip.length - 2], latlngsForTrip[latlngsForTrip.length - 1]);
-            $("body").append(`<h1 id="distance">${tripDistance * 0.000621371} miles</h1>`); 
+            $("body").append(`<h1 id="distance">${tripDistance * 0.000621371} miles</h1>`);
 
             $("body").append(`<div id="capableVessels"><h3>Capable Vessels:</h3></div>`);
             let capableVessels = [];
@@ -134,7 +176,7 @@ async function loadMap() {
                     capableVessels.push(vessel);
                     $("#capableVessels").append(`<p>${vessel.name}</p>`);
                 }
-                
+
             }
         });
     });
@@ -199,7 +241,7 @@ async function loadMap() {
                 stops.push(L.marker([e.latlng.lat, e.latlng.lng]).addTo(map));
                 tripPolyline.setLatLngs(latlngsForTrip);
                 tripDistance += map.distance(latlngsForTrip[latlngsForTrip.length - 2], latlngsForTrip[latlngsForTrip.length - 1]);
-        
+
 
 
             }

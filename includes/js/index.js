@@ -37,9 +37,14 @@ async function loadMap() {
     const { userLat, userLong } = await getUserCoords();
     const ports = await getPorts();
 
+    let tripStarted = false; // used to keep track of if a user has started a trip for controlling state of marker popups
+    let latlngsForTrip = []; // used to keep track of marker coords (used to draw leaflet polyline)
+    let tripPolyline = null;
+    let tripDistance = 0;
+
     var map = L.map('map', {
         center: [userLat, userLong],
-        zoom: 13,
+        zoom: 4,
     });
 
     // Add the tile layer
@@ -52,9 +57,61 @@ async function loadMap() {
     var marker = L.marker([userLat, userLong]).addTo(map).bindPopup("You are here!");
 
     // Add markers at all ports
-    for (let i = 0; i < ports.length; i++) {
-        L.marker([ports[i].coordinates[0], ports[i].coordinates[1]]).addTo(map).bindPopup(`${ports[i].name}`);
+    // Using Font Awesome icons w/ Bootstrap styling for markers
+    const portIcon = L.divIcon({ html: '<i class="fa-solid fa-ship fs-5 text-primary"></i>' });
+    for (const port of ports) {
+        L.marker([port.coordinates[0], port.coordinates[1]], { icon: portIcon }).addTo(map).bindPopup(() => {
+            const disabledStartBtn = tripStarted ? "disabled" : "";
+            const disabledAddStopBtn = tripStarted ? "" : "disabled";
+            const disabledEndBtn = tripStarted ? "" : "disabled";
+            return `
+                <h5>${port.name}</h5>
+                <button type="button" id="startTripBtn" class="btn btn-primary" ${disabledStartBtn}>Start Trip</button>
+                <button type="button" id="addStopBtn" class="btn btn-primary" ${disabledAddStopBtn}>Add Stop</button>
+                <button type="button" id="endTripBtn" class="btn btn-primary" ${disabledEndBtn}>End Trip</button>
+            `;
+        });
     }
+
+    // Add event listeners to popup start and end trip buttons
+    // have to add an event listener to detect when popups open first, because popups are added to the dom only when they are opened (i think)
+    map.on("popupopen", (e) => {
+        const popup = e.popup.getElement();
+        const markerLatlng = e.popup._latlng;
+        const startTripBtn = $(popup).find("#startTripBtn");
+        const addStopBtn = $(popup).find("#addStopBtn");
+        const endTripBtn = $(popup).find("#endTripBtn");
+
+        startTripBtn.on("click", () => {
+            latlngsForTrip = []; // empty array from previous trip
+            if (tripPolyline) {tripPolyline.setLatLngs([]);} // reset polyline
+            tripDistance = 0;
+            tripStarted = true;
+            startTripBtn.prop("disabled", true);
+            addStopBtn.prop("disabled", false);
+            endTripBtn.prop("disabled", false);
+            latlngsForTrip.push(markerLatlng);
+            tripPolyline = L.polyline(latlngsForTrip, {color: "red"}).addTo(map);
+        });
+
+        addStopBtn.on("click", () => {
+            latlngsForTrip.push(markerLatlng);
+            tripPolyline.setLatLngs(latlngsForTrip);
+            tripDistance += map.distance(latlngsForTrip[latlngsForTrip.length - 2], latlngsForTrip[latlngsForTrip.length - 1]);
+        });
+
+        endTripBtn.on("click", () => {
+            tripStarted = false;
+            startTripBtn.prop("disabled", false);
+            addStopBtn.prop("disabled", true);
+            endTripBtn.prop("disabled", true);
+            latlngsForTrip.push(markerLatlng);
+            tripPolyline.setLatLngs(latlngsForTrip);
+            tripDistance += map.distance(latlngsForTrip[latlngsForTrip.length - 2], latlngsForTrip[latlngsForTrip.length - 1]);
+            $("body").append(`<h1>${tripDistance / 1000} km </h1>`); //km
+        });
+    });
+
 
     // Load and duplicate water polygons //
     // This stuff is where Joe differentiates the land and sea. DON'T Change this Stuff //
@@ -110,9 +167,15 @@ async function loadMap() {
         }
         // if its water, do something!!! Definitely delete those alerts.
         if (isInWater) {
-            alert("This is Water");
-        } else {
-            alert("This is not Water!");
+            if (tripStarted) {
+                latlngsForTrip.push([e.latlng.lat, e.latlng.lng]);
+                L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+                tripPolyline.setLatLngs(latlngsForTrip);
+                tripDistance += map.distance(latlngsForTrip[latlngsForTrip.length - 2], latlngsForTrip[latlngsForTrip.length - 1]);
+        
+
+
+            }
         }
     });
 }

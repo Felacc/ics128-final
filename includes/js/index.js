@@ -64,6 +64,28 @@ async function getWeatherData(latitude, longitude) {
     }
 }
 
+async function runBoatAnimation(latlngs, map) {
+    const boatIcon = L.divIcon({
+        html: `<i class="fa-solid fa-ship text-danger" style="font-size: 1.5rem"></i>`,
+        className: ""
+    });
+    const boat = L.marker([latlngs[0].lat, latlngs[0].lng], { icon: boatIcon }).addTo(map);
+    const fx = new L.PosAnimation(); // https://leafletjs.com/reference.html#posanimation
+
+    // use another async function to ensure each PosAnimation runs one at a time
+    const moveBoatToPos = async function(latlng) {
+        return new Promise((resolve) => {
+            const pos = map.latLngToLayerPoint(latlng);
+            fx.run(boat._icon, pos, 2); // run the animation
+            fx.once('end', resolve); // return the promise
+        });
+    };
+
+    for (let i = 1; i < latlngs.length; i++) {
+        await moveBoatToPos(latlngs[i]);
+    }
+}
+
 async function loadMap() {
     const { userLat, userLong } = await getUserCoords();
     const ports = await getPorts();
@@ -87,11 +109,22 @@ async function loadMap() {
     }).addTo(map);
 
     // Add a marker at Interurban or user location on load
-    var marker = L.marker([userLat, userLong]).addTo(map).bindPopup("You are here!");
+    const userLocIcon = L.divIcon({
+        html: `<i class="fa-solid fa-location-dot text-success" style="font-size: 1.5rem"></i>`,
+        className: "", // remove leaflet stylings
+        iconSize: [24, 24], // 24px x 24px --- 24px ~= 1.5rem
+        iconAnchor: [12, 24] // sets the icon position to the middle top (since the marker is a long shape)
+    });
+    L.marker([userLat, userLong], { icon: userLocIcon }).addTo(map).bindPopup("You are here!");
 
     // Add markers at all ports
     // Using Font Awesome icons w/ Bootstrap styling for markers
-    const portIcon = L.divIcon({ html: '<i class="fa-solid fa-ship fs-5 text-primary"></i>' });
+    const portIcon = L.divIcon({
+        html: '<i class="fa-solid fa-anchor text-primary" style="font-size: 1.5rem;"></i>',
+        className: "",
+        iconSize: [24, 24],
+        iconAnchor: [12, 24] // sets the icon position to the middle top (since the anchor is also a long shape)
+    });
     for (const port of ports) {
         L.marker([port.coordinates[0], port.coordinates[1]], { icon: portIcon }).addTo(map).bindPopup(() => {
             const disabledStartBtn = tripStarted ? "disabled" : "";
@@ -164,6 +197,7 @@ async function loadMap() {
             endTripBtn.prop("disabled", true);
             latlngsForTrip.push(markerLatlng);
             tripPolyline.setLatLngs(latlngsForTrip);
+            runBoatAnimation(latlngsForTrip, map);
             tripDistance += map.distance(latlngsForTrip[latlngsForTrip.length - 2], latlngsForTrip[latlngsForTrip.length - 1]);
             $("body").append(`<h1 id="distance">${tripDistance * 0.000621371} miles</h1>`);
 
@@ -237,7 +271,7 @@ async function loadMap() {
         // if its water, do something!!! Definitely delete those alerts.
         if (isInWater) {
             if (tripStarted) {
-                latlngsForTrip.push([e.latlng.lat, e.latlng.lng]);
+                latlngsForTrip.push(L.latLng(e.latlng.lat, e.latlng.lng));
                 stops.push(L.marker([e.latlng.lat, e.latlng.lng]).addTo(map));
                 tripPolyline.setLatLngs(latlngsForTrip);
                 tripDistance += map.distance(latlngsForTrip[latlngsForTrip.length - 2], latlngsForTrip[latlngsForTrip.length - 1]);
@@ -250,7 +284,7 @@ async function loadMap() {
             // update the map visuals so that there is only one boat icon on whatever port the trip is started at
             // the boat travels along the polyline of the trip
             // if that polyline happens to be across land... like from van to boston
-            // turn the boat into a car before animating it...
+            // turn the boat into a car before animating it...? this might be hard
         }
     });
 }

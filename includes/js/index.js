@@ -24,7 +24,7 @@ async function getUserCoords() {
 }
 
 async function getPorts() {
-    const response = await fetch("includes/json/ports.json");
+    const response = await fetch("public/ports.json");
     if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
     }
@@ -33,7 +33,7 @@ async function getPorts() {
 }
 
 async function getVessels() {
-    const response = await fetch("includes/json/vessels.json");
+    const response = await fetch("public/vessels.json");
     if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
     }
@@ -64,20 +64,25 @@ async function getWeatherData(latitude, longitude) {
     }
 }
 
+// I used leaflet's PosAnimation: https://leafletjs.com/reference.html#posanimation
 async function runBoatAnimation(latlngs, map) {
     const boatIcon = L.divIcon({
         html: `<i class="fa-solid fa-ship text-danger" style="font-size: 1.5rem"></i>`,
         className: ""
     });
     const boat = L.marker([latlngs[0].lat, latlngs[0].lng], { icon: boatIcon }).addTo(map);
-    const fx = new L.PosAnimation(); // https://leafletjs.com/reference.html#posanimation
+    const fx = new L.PosAnimation();
 
-    // use another async function to ensure each PosAnimation runs one at a time
-    const moveBoatToPos = async function(latlng) {
-        return new Promise((resolve) => {
-            const pos = map.latLngToLayerPoint(latlng);
-            fx.run(boat._icon, pos, 2); // run the animation
-            fx.once('end', resolve); // return the promise
+    // used to ensure each PosAnimation runs one at a time
+    const moveBoatToPos = (latlng) => {
+        return new Promise((resolve, reject) => {
+            try {
+                const pos = map.latLngToLayerPoint(latlng);
+                fx.run(boat._icon, pos, 2); // run the animation
+                fx.once('end', resolve); // resolve the promise
+            } catch (e) {
+                reject(e); // reject with error
+            }
         });
     };
 
@@ -250,7 +255,7 @@ async function loadMap() {
         };
     }
     // Fetching JSON data to make the boundaries
-    fetch('includes/json/ocean.geojson')
+    fetch('public/ocean.geojson')
         .then(res => res.json())
         .then(data => {
             waterPolygons = duplicateWaterPolygons(data);
@@ -287,6 +292,127 @@ async function loadMap() {
             // turn the boat into a car before animating it...? this might be hard
         }
     });
+
+    return vessels; // if this works i just might keep it, it's so stupid
 }
 
-loadMap();
+// loads using bootstrap grid by default
+function loadBoatCatalog(vessels) {
+    const catalogContent = $("#catalogContent");
+
+    const displayVesselsAsGrid = () => {
+        catalogContent.html("");
+        const row = `<div id="mainRow" class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3"></div>`;
+        catalogContent.append(row);
+        for (vessel of vessels) {
+            // replace boatimg with custom imgs in json eventually
+            const boatCard = `
+            <div class="col">
+                <div class="card">
+                    <img src="images/boat.jpeg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">${vessel.name}</h5>
+                        <p class="card-text"><b>Type: </b>${vessel.type}</p>
+                        <p class="card-text"><b>Length: </b>${vessel.length_meters} meters</p>
+                        <p class="card-text"><b>Speed: </b>${vessel.speed_knots} knots</p>
+                        <p class="card-text"><b>Crew needed: </b>${vessel.crew_required} members</p>
+                        <p class="card-text"><b>Crew per member: </b>$${vessel.crew_cost_per_member}</p>
+                        <p class="card-text"><b>Base rate: </b>$${vessel.base_rental_rate}</p>
+
+                        <p class="card-text"><b>Fuel surcharge: </b>$${vessel.fuel_surcharge}</p>
+                        <p class="card-text"><b>Max travel distance: </b>${vessel.max_travel_distance_nautical_miles} nautical miles</p>
+                        <p class="card-text"><b>Cost per mile: </b>$${vessel.cost_per_nautical_mile}</p>
+                        <p class="card-text"><b>Suitable for rain?: </b>${vessel.suitable_for_rain}</p>
+                        <a href="#" class="btn btn-primary">Book Trip</a>
+                    </div>
+                </div>
+            </div>
+        `;
+            catalogContent.find("#mainRow").append(boatCard);
+        }
+    };
+
+    const displayVesselsAsRow = () => {
+        catalogContent.html("");
+        const row = `<div id="mainRow" class="row row-cols-1 g-2 g-lg-3"></div>`;
+        catalogContent.append(row);
+        for (vessel of vessels) {
+            // replace boatimg with custom imgs in json eventually
+            const boatCard = `
+            <div class="col">
+                <div class="card">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="images/boat.jpeg" class="img-fluid rounded-start" alt="...">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">${vessel.name}</h5>
+                                <p class="card-text"><b>Type: </b>${vessel.type}</p>
+                                <p class="card-text"><b>Length: </b>${vessel.length_meters} meters</p>
+                                <p class="card-text"><b>Speed: </b>${vessel.speed_knots} knots</p>
+                                <p class="card-text"><b>Crew needed: </b>${vessel.crew_required} members</p>
+                                <p class="card-text"><b>Crew per member: </b>$${vessel.crew_cost_per_member}</p>
+                                <p class="card-text"><b>Base rate: </b>$${vessel.base_rental_rate}</p>
+
+                                <p class="card-text"><b>Fuel surcharge: </b>$${vessel.fuel_surcharge}</p>
+                                <p class="card-text"><b>Max travel distance: </b>${vessel.max_travel_distance_nautical_miles} nautical miles</p>
+                                <p class="card-text"><b>Cost per mile: </b>$${vessel.cost_per_nautical_mile}</p>
+                                <p class="card-text"><b>Suitable for rain?: </b>${vessel.suitable_for_rain}</p>
+                                <a href="#" class="btn btn-primary">Book Trip</a>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        `;
+            catalogContent.find("#mainRow").append(boatCard);
+        }
+    };
+
+    const displayVesselsUsingMasonry = () => {
+        catalogContent.html("");
+        const row = `<div id="mainRow" class="row" data-masonry='{"percentPosition": true }'></div>`;
+        catalogContent.append(row);
+        for (vessel of vessels) {
+            // replace boatimg with custom imgs in json eventually
+            const boatCard = `
+            <div class="col-sm-6 col-lg-4 mb-4">
+                <div class="card">
+                    <img src="images/boat.jpeg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">${vessel.name}</h5>
+                        <p class="card-text"><b>Type: </b>${vessel.type}</p>
+                        <p class="card-text"><b>Length: </b>${vessel.length_meters} meters</p>
+                        <p class="card-text"><b>Speed: </b>${vessel.speed_knots} knots</p>
+                        <p class="card-text"><b>Crew needed: </b>${vessel.crew_required} members</p>
+                        <p class="card-text"><b>Crew per member: </b>$${vessel.crew_cost_per_member}</p>
+                        <p class="card-text"><b>Base rate: </b>$${vessel.base_rental_rate}</p>
+
+                        <p class="card-text"><b>Fuel surcharge: </b>$${vessel.fuel_surcharge}</p>
+                        <p class="card-text"><b>Max travel distance: </b>${vessel.max_travel_distance_nautical_miles} nautical miles</p>
+                        <p class="card-text"><b>Cost per mile: </b>$${vessel.cost_per_nautical_mile}</p>
+                        <p class="card-text"><b>Suitable for rain?: </b>${vessel.suitable_for_rain}</p>
+                        <a href="#" class="btn btn-primary">Book Trip</a>
+                    </div>
+                </div>
+            </div>
+        `;
+            catalogContent.find("#mainRow").append(boatCard);
+        }
+    };
+
+    // default call
+    displayVesselsAsGrid();
+
+    $("#gridBtn").on("click", displayVesselsAsGrid);
+    $("#rowBtn").on("click", displayVesselsAsRow);
+    $("#masonryBtn").on("click", displayVesselsUsingMasonry);
+}
+
+// i'm so sorry. i felt a deep need to do this.
+// i'm addicted to IIFEs
+// loadMap returns the object with the json data for the boats
+(async () => {
+    loadBoatCatalog(await loadMap());
+})();

@@ -10,7 +10,8 @@
     "fuel_surcharge": 502,
     "max_travel_distance_nautical_miles": "Unlimited",
     "cost_per_nautical_mile": 29.44,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat1.jpg"
   },
   {
     "name": "Sailboat 16",
@@ -23,7 +24,8 @@
     "fuel_surcharge": 609,
     "max_travel_distance_nautical_miles": "Unlimited",
     "cost_per_nautical_mile": 10.81,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat2.jpg"
   },
   {
     "name": "Sailboat 17",
@@ -36,7 +38,8 @@
     "fuel_surcharge": 764,
     "max_travel_distance_nautical_miles": "Unlimited",
     "cost_per_nautical_mile": 19.82,
-    "suitable_for_rain": false
+    "suitable_for_rain": false,
+    "image": "images/boat3.jpg"
   },
   {
     "name": "Sailboat 11",
@@ -49,7 +52,8 @@
     "fuel_surcharge": 780,
     "max_travel_distance_nautical_miles": "Unlimited",
     "cost_per_nautical_mile": 37.93,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat4.jpg"
   },
   {
     "name": "Sailboat 4",
@@ -62,7 +66,8 @@
     "fuel_surcharge": 778,
     "max_travel_distance_nautical_miles": 944,
     "cost_per_nautical_mile": 13.06,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat5.jpg"
   },
   {
     "name": "Sailboat 3",
@@ -75,7 +80,8 @@
     "fuel_surcharge": 545,
     "max_travel_distance_nautical_miles": 2433,
     "cost_per_nautical_mile": 12.84,
-    "suitable_for_rain": false
+    "suitable_for_rain": false,
+    "image": "images/boat6.jpg"
   },
   {
     "name": "Sailboat 10",
@@ -88,7 +94,8 @@
     "fuel_surcharge": 311,
     "max_travel_distance_nautical_miles": 952,
     "cost_per_nautical_mile": 12.72,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat7.jpg"
   },
   {
     "name": "Sailboat 20",
@@ -101,7 +108,8 @@
     "fuel_surcharge": 695,
     "max_travel_distance_nautical_miles": 1763,
     "cost_per_nautical_mile": 34.12,
-    "suitable_for_rain": false
+    "suitable_for_rain": false,
+    "image": "images/boat8.jpg"
   },
   {
     "name": "Sailboat 2",
@@ -114,7 +122,8 @@
     "fuel_surcharge": 976,
     "max_travel_distance_nautical_miles": 1282,
     "cost_per_nautical_mile": 13.31,
-    "suitable_for_rain": false
+    "suitable_for_rain": false,
+    "image": "images/boat9.jpg"
   },
   {
     "name": "Sailboat 15",
@@ -127,7 +136,8 @@
     "fuel_surcharge": 203,
     "max_travel_distance_nautical_miles": 1602,
     "cost_per_nautical_mile": 11.2,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat10.jpg"
   },
   {
     "name": "Sailboat 14",
@@ -140,7 +150,8 @@
     "fuel_surcharge": 406,
     "max_travel_distance_nautical_miles": 883,
     "cost_per_nautical_mile": 28.84,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat11.jpg"
   },
   {
     "name": "Sailboat 24",
@@ -153,7 +164,8 @@
     "fuel_surcharge": 147,
     "max_travel_distance_nautical_miles": 1164,
     "cost_per_nautical_mile": 12.24,
-    "suitable_for_rain": false
+    "suitable_for_rain": false,
+    "image": "images/boat12.jpg"
   },
   {
     "name": "Sailboat 1",
@@ -166,7 +178,8 @@
     "fuel_surcharge": 103,
     "max_travel_distance_nautical_miles": 1326,
     "cost_per_nautical_mile": 15.64,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat13.jpg"
   },
   {
     "name": "Sailboat 8",
@@ -179,7 +192,8 @@
     "fuel_surcharge": 908,
     "max_travel_distance_nautical_miles": 461,
     "cost_per_nautical_mile": 31.2,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat14.jpg"
   },
   {
     "name": "Sailboat 22",
@@ -192,7 +206,8 @@
     "fuel_surcharge": 877,
     "max_travel_distance_nautical_miles": 711,
     "cost_per_nautical_mile": 27.73,
-    "suitable_for_rain": false
+    "suitable_for_rain": false,
+    "image": "images/boat15.jpg"
   },
   {
     "name": "Sailboat 25",
@@ -205,7 +220,8 @@
     "fuel_surcharge": 981,
     "max_travel_distance_nautical_miles": 901,
     "cost_per_nautical_mile": 35.79,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat16.jpg"
   },
   {
     "name": "Sailboat 6",
@@ -218,7 +234,8 @@
     "fuel_surcharge": 611,
     "max_travel_distance_nautical_miles": 1488,
     "cost_per_nautical_mile": 20.24,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat17.jpg"
   },
   {
     "name": "Sailboat 23",
@@ -231,7 +248,8 @@
     "fuel_surcharge": 290,
     "max_travel_distance_nautical_miles": 2081,
     "cost_per_nautical_mile": 39.58,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat18.jpg"
   },
   {
     "name": "Sailboat 21",
@@ -244,7 +262,8 @@
     "fuel_surcharge": 829,
     "max_travel_distance_nautical_miles": 1030,
     "cost_per_nautical_mile": 28.1,
-    "suitable_for_rain": false
+    "suitable_for_rain": false,
+    "image": "images/boat19.jpg"
   },
   {
     "name": "Sailboat 7",
@@ -257,7 +276,8 @@
     "fuel_surcharge": 754,
     "max_travel_distance_nautical_miles": 2111,
     "cost_per_nautical_mile": 27.22,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat20.jpg"
   },
   {
     "name": "Sailboat 18",
@@ -270,7 +290,8 @@
     "fuel_surcharge": 600,
     "max_travel_distance_nautical_miles": 380,
     "cost_per_nautical_mile": 12.89,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat21.jpg"
   },
   {
     "name": "Sailboat 5",
@@ -283,7 +304,8 @@
     "fuel_surcharge": 750,
     "max_travel_distance_nautical_miles": 420,
     "cost_per_nautical_mile": 16.77,
-    "suitable_for_rain": true
+    "suitable_for_rain": true,
+    "image": "images/boat22.jpg"
   },
   {
     "name": "Sailboat 12",
@@ -296,7 +318,8 @@
     "fuel_surcharge": 956,
     "max_travel_distance_nautical_miles": 2429,
     "cost_per_nautical_mile": 27.66,
-    "suitable_for_rain": false
+    "suitable_for_rain": false,
+    "image": "images/boat23.jpg"
   },
   {
     "name": "Sailboat 9",
@@ -309,7 +332,8 @@
     "fuel_surcharge": 396,
     "max_travel_distance_nautical_miles": 523,
     "cost_per_nautical_mile": 21.18,
-    "suitable_for_rain": false
+    "suitable_for_rain": false,
+    "image": "images/boat24.jpg"
   },
   {
     "name": "Sailboat 13",
@@ -322,6 +346,7 @@
     "fuel_surcharge": 353,
     "max_travel_distance_nautical_miles": 1358,
     "cost_per_nautical_mile": 17.52,
-    "suitable_for_rain": false
+    "suitable_for_rain": false,
+    "image": "images/boat25.jpg"
   }
 ]

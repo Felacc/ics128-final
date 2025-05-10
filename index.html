@@ -23,13 +23,194 @@
     </style>
 
 <body>
+    <header>
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="images/Blue_sea_wave.svg.png" alt="Logo" width="30" height="24"
+                        class="d-inline-block align-text-top">
+                    ICS 128 | Final Project
+                </a>
+                <a type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
+                    aria-controls="offcanvasCart">
+                    <i class="fa-solid fa-cart-shopping fs-4"></i>
+                </a>
+            </div>
+        </nav>
+    </header>
+    <!--Cart offcanvas-->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCart" aria-labelledby="offcanvasCartLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasCartLabel">Boats for this Trip</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="ms-1" id="emptyCart">Empty cart</div>
+            <div id="cart">
+                <ul id="cartItems" class="list-group"></ul>
+                <div id="cartTotal" class="mt-3"><b>Total: $0.00</b></div>
+            </div>
+            <button id="cartBookBtn" class="btn btn-primary mt-5" type="button">Book Trip</button>
+            <button id="emptyCartBtn" class="btn btn-danger mt-5 ms-3" type="button">Empty Cart</i></button>
+        </div>
+    </div>
+
+    <!-- Booking Details Modal -->
+    <div class="modal fade" id="bookingDetailsModal" tabindex="-1" aria-labelledby="bookingDetailsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="bookingDetailsModalLabel">Booking Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="bookingDetailsModalBody" class="modal-body">
+                    <ul id="bookingItems" class="list-group"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="bookingDetailsConfirm" type="button" class="btn btn-primary">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Information Modal -->
+    <div class="modal fade" id="customerInfoModal" tabindex="-1" aria-labelledby="customInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="customInfoModalLabel">Enter Your Info</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+
+                        <!--First Name-->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">First name:</span>
+                            <input id="firstName" type="text" class="form-control" placeholder="First"
+                                aria-label="First name" aria-describedby="basic-addon1">
+                        </div>
+                        <!--Last Name-->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Last name:</span>
+                            <input id="lastName" type="text" class="form-control" placeholder="Last"
+                                aria-label="Last name" aria-describedby="basic-addon1">
+                        </div>
+                        <!--Email-->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Email:</span>
+                            <input id="email" type="text" class="form-control" placeholder="email@email.com"
+                                aria-label="Email" aria-describedby="basic-addon1">
+                        </div>
+                        <!--Phone Number-->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Phone number:</span>
+                            <input id="phoneNumber" type="text" class="form-control" placeholder="778-555-6787"
+                                aria-label="Phone number" aria-describedby="basic-addon1">
+                        </div>
+                        <!--Address-->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Address:</span>
+                            <input id="address" type="text" class="form-control" placeholder="123 Street Rd" aria-label="Address"
+                                aria-describedby="basic-addon1">
+                        </div>
+                        <!--City-->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">City:</span>
+                            <input id="city" type="text" class="form-control" placeholder="Victoria" aria-label="City"
+                                aria-describedby="basic-addon1">
+                        </div>
+                        <!--State/Province-->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">State/Province:</span>
+                            <input id="province" type="text" class="form-control" placeholder="BC" aria-label="City"
+                                aria-describedby="basic-addon1">
+                        </div>
+                        <!--Country-->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Country:</span>
+                            <input id="country" type="text" class="form-control" placeholder="Canada" aria-label="Country"
+                                aria-describedby="basic-addon1">
+                        </div>
+                        <!--Postal Code-->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Postal code:</span>
+                            <input id="postalCode" type="text" class="form-control" placeholder="X0X0X0"
+                                aria-label="Postal code" aria-describedby="basic-addon1">
+                        </div>
+                        <!--Buttons-->
+                        <button id="customerInfoSubmit" type="button" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+
+                        <div id="error" class="text-danger fs-5 fw-bold"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Order Modal -->
+    <div class="modal fade" id="confirmBookingModal" tabindex="-1" aria-labelledby="confirmBookingModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="confirmBookingModalLabel">Confirm Order</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="confirmOrderBody" class="modal-body">
+                    Are you sure?
+                    <div id="confirmCost"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="orderConfirm" type="button" class="btn btn-primary">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booked  Modal -->
+    <div class="modal fade" id="bookedModal" tabindex="-1" aria-labelledby="bookedModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="bookedModalLabel">Booked!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="bookedBody" class="modal-body">
+                    BOOKED!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div id="map"></div>
+    <h4 id="currentTripDistance" class="text-center mt-3"></h4>
     <div id="boatCatalog" class="container-fluid mt-4">
         <!--dynamically generated menu-->
         <div id="catalogMenu"></div>
         <!--dynamically generated catalog content-->
-        <div id="catalogContent"></div>
+        <div id="catalogContent">
+            <div class="container d-flex flex-column justify-content-center align-items-center">
+                <h1>Use the map above to start your trip!</h1>
+                <h4>
+                    1. Click on a port <br>
+                    2. Then select start trip <br>
+                    3. Place markers on the map to draw the route you would like to take <br>
+                    4. Then finally select your ending port and click end trip <br>
+                    5. Select boats from the catalog that you would like to use
+                </h4>
+            </div>
+
+        </div>
 
     </div>
 

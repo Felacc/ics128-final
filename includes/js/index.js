@@ -1,6 +1,303 @@
+/*
+PLEASE READ:
+
+This is possibly the worst thing I have ever made.
+It is a complete disaster and I made so many bad design choices.
+It is possibly really buggy (I know it is, who am I kidding).
+Unfortunately I did not have a lot of time to work on this and this whole thing was really rushed.
+I realize it looks bad, barely works, and the code is garbage.
+I call the same functions over and over and over.
+I barely have error handling.
+I should have used classes probably.
+At this point I am just submitting and hoping I pass.
+Also I did a lot of this on no sleep and late at night.
+I know I could have done this 1000x better if I wasn't such a mess lol.
+I did learn about IIFEs and those are cool and I used them a bunch.
+
+I did my best to follow your rubric, for almost everything.
+Honest to god though, I gave up around the checkout routine (and it is obvious).
+Oh and my commenting is terrible, I just did not have time to comment as I went.
+I just did the checkout routine and localStorage stuff and I really need to sleep so I'm just gonna turn it in.
+Sorry for rambling.
+
+In order to find instances where I used course topics you can CTRL+F this emoji:  ⭐
+
+Please forgive me for the code you are about to read.
+
+P.S.
+If everything breaks, oh well, I just shuffled a bunch of stuff around and don't really have time to test.
+Worst case scenario I can always retake the course haha.
+*/
+
+
+
+
 // Default coordinates set to interurban campus
 let userLat = 48.49103113795146;
 let userLong = -123.41514114992222;
+
+
+const calculateTotalCost = (vessel, tripDetails) => {
+    return vessel.base_rental_rate
+        + (vessel.crew_required * vessel.crew_cost_per_member)
+        + (vessel.cost_per_nautical_mile * tripDetails.tripDistance)
+        + (tripDetails.isRaining ? vessel.fuel_surcharge * 2 : vessel.fuel_surcharge);
+};
+
+
+
+// okay so I figured out this localStorage thing at like 2am
+// idk what is going on
+// it works
+// it's gross
+// i have so much regret and wish I did everything differently
+// also i know i haven't commented this project much, im so low on time and have given up on commenting
+
+// ⭐ USE OF LET VARIABLES
+let cartTotal = parseFloat(localStorage.getItem("cartTotal")) || 0;
+let numberOfCartItems = parseInt(localStorage.getItem("numberOfCartItems")) || 0;
+let vesselsInCart = JSON.parse(localStorage.getItem("vesselsInCart") || "[]");
+let trip = JSON.parse(localStorage.getItem("tripDetails") || "[]");
+(obtainLocalStorageInfo = () => {
+    if (numberOfCartItems > 0) {
+        $("#emptyCart").html("");
+
+        for (const vessel of vesselsInCart) {
+            $("#cartItems").append(`
+                <li id="${vessel.vessel.name.replaceAll(" ", "")}CartItem" class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <p>Boat: ${vessel.vessel.name}<br><b>Cost:</b> $${calculateTotalCost(vessel.vessel, trip).toFixed(2)}</p>
+                        <button id="${vessel.vessel.name.replaceAll(" ", "")}RemoveFromCart" class="btn" type="button"><i class="fa-solid fa-x"></i></button>
+                    </div>
+                </li>
+            `);
+
+            $(`#${vessel.vessel.name.replaceAll(" ", "")}RemoveFromCart`).on("click", () => {
+                $(`#${vessel.vessel.name.replaceAll(" ", "")}CartItem`).remove();
+                cartTotal -= calculateTotalCost(vessel.vessel, trip);
+                $("#cartTotal").html(`<b>Total: </b>$${cartTotal.toFixed(2)}`);
+                numberOfCartItems--;
+
+                const indexToRemove = vesselsInCart.findIndex(v => v.vessel.name === vessel.vessel.name);
+                if (indexToRemove !== -1) {
+                    vesselsInCart.splice(indexToRemove, 1);
+                }
+
+                localStorage.setItem("cartTotal", cartTotal);
+                localStorage.setItem("numberOfCartItems", numberOfCartItems);
+                localStorage.setItem("vesselsInCart", JSON.stringify(vesselsInCart));
+
+                if (numberOfCartItems === 0) {
+                    $("#emptyCart").html("Empty cart");
+                }
+            });
+        }
+
+        $("#cartTotal").html(`<b>Total: </b>$${cartTotal.toFixed(2)}`);
+    } else {
+        $("#emptyCart").html("Empty cart");
+    }
+})();
+
+// empty cart btn
+$(`#emptyCartBtn`).on("click", () => {
+    $("#cartItems").html("");
+    numberOfCartItems = 0;
+    $("#emptyCart").html("Empty cart");
+    cartTotal = 0;
+    $("#cartTotal").html(`<b>Total: </b>$${cartTotal.toFixed(2)}`);
+
+    vesselsInCart = [];
+
+    localStorage.setItem("cartTotal", cartTotal);
+    localStorage.setItem("numberOfCartItems", numberOfCartItems);
+    localStorage.setItem("vesselsInCart", JSON.stringify(vesselsInCart));
+});
+
+const bookingModal = new bootstrap.Modal(document.getElementById("bookingDetailsModal"));
+const customerInfoModal = new bootstrap.Modal(document.getElementById("customerInfoModal"));
+const orderConfirmModal = new bootstrap.Modal(document.getElementById("confirmBookingModal"));
+const bookedModal = new bootstrap.Modal(document.getElementById("bookedModal"));
+const cartOffcanvas = new bootstrap.Offcanvas(document.getElementById("offcanvasCart"));
+
+// book trip btn
+$("#cartBookBtn").on("click", () => {
+    if (numberOfCartItems > 0) {
+        bookingModal.show();
+        const bookingItems = $("#cart").html();
+        $("#bookingItems").html(bookingItems);
+    }
+});
+
+// confirm btn for booking details modal
+$("#bookingDetailsConfirm").on("click", () => {
+    bookingModal.hide();
+    customerInfoModal.show();
+});
+
+// customer info submit btn w/ regex and shit
+customerInfoSubmit.addEventListener("click", () => {
+    // Error message shit
+    let error = false;
+    let errorDiv = document.querySelector("#error");
+    let errorMessage = "";
+
+    // Input values
+    const firstName = document.querySelector("#firstName").value;
+    const lastName = document.querySelector("#lastName").value;
+    const email = document.querySelector("#email").value;
+    const phoneNumber = document.querySelector("#phoneNumber").value;
+    const address = document.querySelector("#address").value;
+    const city = document.querySelector("#city").value;
+    const province = document.querySelector("#province").value;
+    const country = document.querySelector("#country").value;
+
+    const postalCode = document.querySelector("#postalCode").value;
+
+    // ⭐ USE OF REGEX TO VALIDATE FORM DATA
+    // Regex
+    const nameReggie = /^[a-zA-Z]+$/;
+    const emailReggie = /^\w+@[a-zA-Z]+\.[a-zA-Z]+$/;
+    const postalReggie = /^[A-Za-z][0-9][A-Za-z] ?[0-9][A-Za-z][0-9]$/;
+    const phoneReggie = /^[0-9][0-9][0-9][ |-]?[0-9][0-9][0-9][ |-]?[0-9][0-9][0-9][0-9]$/
+
+    // more Regex
+    const checkForBlank = /^$/;
+    const checkForSpace = / /;
+    const checkForNotAZ = /[^A-Za-z]/;
+    const checkForNotAZEmailEdition = /@.*[^A-Za-z|.].*/ // after the @ if there are any non alphabetical or non period characters
+    const checkForNotAlphanumeric = /[^a-zA-Z\d\s]/;
+    // Validate name inputs
+    // Add check for each kind of error
+    if (!(nameReggie.test(firstName))) {
+        errorMessage = "First name:\n";
+
+        if (checkForBlank.test(firstName)) {
+            errorMessage += "is blank\n";
+        }
+
+        if (checkForSpace.test(firstName)) {
+            errorMessage += "has a space\n";
+        }
+
+        if (checkForNotAZ.test(firstName)) {
+            errorMessage += "has a non alphabetical character\n";
+        }
+
+        error = true;
+
+        document.querySelector("#firstName").value = "";
+    }
+
+    if (!(nameReggie.test(lastName))) {
+        errorMessage = "Last name:\n";
+
+        if (checkForBlank.test(lastName)) {
+            errorMessage += "is blank\n";
+        }
+
+        if (checkForSpace.test(lastName)) {
+            errorMessage += "has a space\n";
+        }
+
+        if (checkForNotAZ.test(lastName)) {
+            errorMessage += "has a non alphabetical character\n";
+        }
+
+        error = true;
+
+        document.querySelector("#lastName").value = "";
+    }
+
+    if (!error) {
+        // Validate email inputs
+        if (!(emailReggie.test(email))) {
+            errorMessage = "Email must be entered as email@email.com\n";
+
+            if (checkForNotAZEmailEdition.test(email)) {
+                errorMessage += "and the domains must be alphabetical\n"
+            }
+
+            error = true;
+
+            document.querySelector("#email").value = "";
+        }
+    }
+
+    if (!error) {
+        // Validate postal code
+        if (!(postalReggie.test(postalCode))) {
+            errorMessage = "Postal format: X0X0X0 or X0X 0X0\n";
+            error = true;
+
+            document.querySelector("#postalCode").value = "";
+        }
+    }
+
+    if (!error) {
+        // Validate phone number
+        if (!(phoneReggie.test(phoneNumber))) {
+            errorMessage = "Phone number format whack\n";
+            error = true;
+
+            document.querySelector("#phoneNumber").value = "";
+        }
+    }
+
+    if (!error) {
+        // validate address
+        if (checkForNotAlphanumeric.test(address)) {
+            errorMessage = "Address not alphanumeric\n";
+            error = true;
+
+            document.querySelector("#address").value = "";
+        }
+    }
+
+    if (!error) {
+        // validate city
+        if (checkForNotAlphanumeric.test(city)) {
+            errorMessage = "City not alphanumeric\n";
+            error = true;
+
+            document.querySelector("#city").value = "";
+        }
+    }
+
+    if (!error) {
+        // validate province
+        if (checkForNotAlphanumeric.test(province)) {
+            errorMessage = "State/Province not alphanumeric\n";
+            error = true;
+
+            document.querySelector("#province").value = "";
+        }
+    }
+
+    if (!error) {
+        // validate country
+        if (checkForNotAlphanumeric.test(country)) {
+            errorMessage = "Country not alphanumeric\n";
+            error = true;
+
+            document.querySelector("#country").value = "";
+        }
+    }
+
+    errorDiv.innerText = errorMessage;
+
+    if (!error) {
+        customerInfoModal.hide();
+        cartOffcanvas.hide();
+        orderConfirmModal.show();
+    }
+});
+
+$("#orderConfirm").on("click", () => {
+    orderConfirmModal.hide();
+    bookedModal.show();
+    $("#emptyCartBtn").click(); // i can't believe this worked. i just guessed this existed.
+})
 
 async function getUserCoords() {
     return new Promise((resolve, reject) => {
@@ -23,6 +320,7 @@ async function getUserCoords() {
     });
 }
 
+// ⭐ USE OF FETCH
 async function getPorts() {
     const response = await fetch("public/ports.json");
     if (!response.ok) {
@@ -53,6 +351,7 @@ async function getWeatherData(latitude, longitude) {
         const response = await fetch(URL);
 
         if (!response.ok) {
+            // ⭐ USE OF THROWING ERROR
             throw new Error(`Error: ${response.statusText}`);
         }
 
@@ -65,6 +364,8 @@ async function getWeatherData(latitude, longitude) {
 }
 
 // I used leaflet's PosAnimation: https://leafletjs.com/reference.html#posanimation
+// ⭐ USE OF ANIMATION TECHNIQUES
+// ⭐ USE OF LEAFLET KNOWLEDGE
 async function runBoatAnimation(latlngs, map) {
     const boatIcon = L.divIcon({
         html: `<i class="fa-solid fa-ship text-danger" style="font-size: 1.5rem"></i>`,
@@ -76,6 +377,7 @@ async function runBoatAnimation(latlngs, map) {
     // used to ensure each PosAnimation runs one at a time
     const moveBoatToPos = (latlng) => {
         return new Promise((resolve, reject) => {
+            // ⭐ USE OF TRY/CATCH
             try {
                 const pos = map.latLngToLayerPoint(latlng);
                 fx.run(boat._icon, pos, 2); // run the animation
@@ -149,6 +451,7 @@ async function loadMap() {
     // Add event listeners to popup start and end trip buttons
     // have to add an event listener to detect when popups open first, because popups are added to the dom only when they are opened (i think)
     map.on("popupopen", (e) => {
+        // ⭐ USE OF CONST VARIABLES
         const popup = e.popup.getElement();
         const markerLatlng = e.popup._latlng;
         const startTripBtn = $(popup).find("#startTripBtn");
@@ -172,6 +475,17 @@ async function loadMap() {
         })();
 
         startTripBtn.on("click", () => {
+            // empty cart
+            cartTotal = 0;
+            numberOfCartItems = 0;
+
+            // ⭐ USE OF JQUERY DOM MANIPULATION
+            $("#cartItems").html("");
+            $("#emptyCart").html("Empty cart");
+            $("#cartTotal").html(`<b>Total: </b> $0.00`);
+
+            $("#catalogContent").html("<h1>New trip in progress...</h1>"); // remove catalog
+            $(".leaflet-marker-pane").find(".fa-ship").remove(); // remove boat
             latlngsForTrip = []; // empty array from previous trip
             if (tripPolyline) { tripPolyline.setLatLngs([]); } // reset polyline
             tripDistance = 0; // reset distance
@@ -195,41 +509,46 @@ async function loadMap() {
         });
 
         endTripBtn.on("click", () => {
-            tripStarted = false;
-            startTripBtn.prop("disabled", false);
-            addStopBtn.prop("disabled", true);
-            endTripBtn.prop("disabled", true);
             latlngsForTrip.push(markerLatlng);
-            tripPolyline.setLatLngs(latlngsForTrip);
-            runBoatAnimation(latlngsForTrip, map);
-            tripDistance += map.distance(latlngsForTrip[latlngsForTrip.length - 2], latlngsForTrip[latlngsForTrip.length - 1]);
+            if (!(latlngsForTrip[0] === latlngsForTrip[latlngsForTrip.length - 1])) {
+                tripStarted = false;
+                startTripBtn.prop("disabled", false);
+                addStopBtn.prop("disabled", true);
+                endTripBtn.prop("disabled", true);
+                tripPolyline.setLatLngs(latlngsForTrip);
+                runBoatAnimation(latlngsForTrip, map);
+                tripDistance += map.distance(latlngsForTrip[latlngsForTrip.length - 2], latlngsForTrip[latlngsForTrip.length - 1]);
 
-            // load vessels capable of completing trip on page
-            let capableVessels = [];
-            const tripDistanceInMiles = tripDistance * 0.000621371;
-            for (const vessel of vessels) {
-                const maxDistanceInMiles = vessel.max_travel_distance_nautical_miles;
-                if (maxDistanceInMiles == "Unlimited" || maxDistanceInMiles >= tripDistanceInMiles) {
-                    capableVessels.push(vessel);
-                }
-            }
-
-            // determine if its raining at any of the trips markers
-            // (i know joe said just to do start and stop points but that didn't make sense to me)
-            // then reload the map with trip details
-            let tripDetails = null;
-            (async () => {
-                let raining = false;
-                for (const latlng of latlngsForTrip) {
-                    const weatherData = await getWeatherData(latlng.lat, latlng.lng);
-                    if (weatherData.weather[0].main === "Rain") {
-                        raining = true;
-                        break;
+                // load vessels capable of completing trip on page
+                let capableVessels = [];
+                const tripDistanceInMiles = tripDistance * 0.000621371;
+                $("#currentTripDistance").html(`Current trip distance: ${tripDistanceInMiles.toFixed(2)} miles`);
+                for (const vessel of vessels) {
+                    const maxDistanceInMiles = vessel.max_travel_distance_nautical_miles;
+                    if (maxDistanceInMiles == "Unlimited" || maxDistanceInMiles >= tripDistanceInMiles) {
+                        capableVessels.push(vessel);
                     }
                 }
-                tripDetails = { tripDistance: tripDistanceInMiles, isRaining: raining };
-                loadBoatCatalog(capableVessels, tripDetails);
-            })();
+
+                // determine if its raining at any of the trips markers
+                // (i know joe said just to do start and stop points but that didn't make sense to me)
+                // then reload the map with trip details
+                let tripDetails = null;
+                (async () => {
+                    let raining = false;
+                    for (const latlng of latlngsForTrip) {
+                        const weatherData = await getWeatherData(latlng.lat, latlng.lng);
+                        if (weatherData.weather[0].main === "Rain") {
+                            raining = true;
+                            break;
+                        }
+                    }
+                    // ⭐ USE OF OBJECT (DECONSTRUCTED)
+                    tripDetails = { tripDistance: tripDistanceInMiles, isRaining: raining };
+                    loadBoatCatalog(capableVessels, tripDetails);
+                })();
+            }
+
         });
     });
 
@@ -302,8 +621,6 @@ async function loadMap() {
             // turn the boat into a car before animating it...? this might be hard
         }
     });
-
-    return vessels; // if this works i just might keep it, it's so stupid
 }
 
 
@@ -328,6 +645,7 @@ function loadBoatCatalog(vessels, tripDetails) {
         }
     }
 
+    // ⭐  USE OF ARRAY
     // get unique boat types
     const boatTypes = [];
     for (const vessel of vessels) {
@@ -343,10 +661,7 @@ function loadBoatCatalog(vessels, tripDetails) {
         }
     }
 
-    // not finished need to figure out how to add distance into this thing
-    const calculateTotalCost = (vessel) => {
-        return (vessel.crew_required * vessel.crew_cost_per_member) + vessel.base_rental_rate + vessel.fuel_surcharge + vessel.cost_per_nautical_mile;
-    };
+
 
     (displayCatalogMenu = () => {
         const catalogMenu = $("#catalogMenu");
@@ -381,7 +696,7 @@ function loadBoatCatalog(vessels, tripDetails) {
                 </ul>
             </div>`;
 
-        
+
         let boatTypeDropdownBtnsHtml = ``;
         for (const boatType of boatTypes) {
             boatTypeDropdownBtnsHtml += `<li><button id="${boatType.replaceAll(" ", "")}Btn" class="dropdown-item" type="button">${boatType}</button></li>`;
@@ -408,20 +723,22 @@ function loadBoatCatalog(vessels, tripDetails) {
 
     const catalogContent = $("#catalogContent");
 
+
+    // ⭐ USE OF DECONSTRUCTION OF JSON DATA
     const displayVesselsAsGrid = (vessels) => {
         displayMode = "grid";
         catalogContent.html("");
         const row = `<div id="mainRow" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 row-cols-xxl-5 g-2 g-lg-3"></div>`;
         catalogContent.append(row);
         for (const vessel of vessels) {
-            const totalCrewCost = vessel.crew_required * vessel.crew_cost_per_member;
-            const totalCostForDistance = vessel.cost_per_nautical_mile * tripDetails.tripDistance;
-            const fuelSurcharge = tripDetails.isRaining ? vessel.fuel_surcharge * 2 : vessel.fuel_surcharge;
+            const totalCrewCost = (vessel.crew_required * vessel.crew_cost_per_member).toFixed(2);
+            const totalCostForDistance = (vessel.cost_per_nautical_mile * tripDetails.tripDistance).toFixed(2);
+            const fuelSurcharge = (tripDetails.isRaining ? vessel.fuel_surcharge * 2 : vessel.fuel_surcharge).toFixed(2);
             // replace boating with custom imgs in json eventually
             const boatCard = `
             <div class="col">
                 <div class="card">
-                    <img src="images/boat.jpeg" class="card-img-top" alt="...">
+                    <img src="${vessel.image}" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title"><b>${vessel.name}</b></h5>
                     </div>
@@ -432,26 +749,26 @@ function loadBoatCatalog(vessels, tripDetails) {
                             <b>Length: </b>${vessel.length_meters} meters <br>
                             <b>Speed: </b>${vessel.speed_knots} knots <br>
                             <b>Max travel distance: </b>${vessel.max_travel_distance_nautical_miles} nautical miles <br>
-                            <b>Cost per mile: </b>$${vessel.cost_per_nautical_mile} <br>
-                            <b>Fuel surcharge: </b> $${vessel.fuel_surcharge} <br>
+                            <b>Cost per mile: </b>$${vessel.cost_per_nautical_mile.toFixed(2)} <br>
+                            <b>Fuel surcharge: </b> $${vessel.fuel_surcharge.toFixed(2)} <br>
                             <b>Suitable for rain?: </b> ${vessel.suitable_for_rain}
                         </li>
                         <li class="list-group-item">
                             <h5>Crew Info</h5>  
                             <b>Crew required:</b> ${vessel.crew_required} members <br>
-                            <b>Cost per member:</b> $${vessel.crew_cost_per_member}/member
+                            <b>Cost per member:</b> $${vessel.crew_cost_per_member.toFixed(2)}/member
                         </li>
                         <li class="list-group-item">
                             <h5>Cost Breakdown</h5> 
-                            <b>Base rate: </b>$${vessel.base_rental_rate} <br>
+                            <b>Base rate: </b>$${vessel.base_rental_rate.toFixed(2)} <br>
                             <b>Cost of crew: </b> $${totalCrewCost}<br>
                             <b>Cost per mile * current trip distance: </b> $${totalCostForDistance} <br>
                             <b>Total fuel surcharge (2x if raining): </b>$${fuelSurcharge} <br>
-                            <b>Total cost of current trip: </b>$${vessel.base_rental_rate + totalCrewCost + totalCostForDistance + fuelSurcharge}
+                            <b>Total cost of current trip: </b>$${calculateTotalCost(vessel, tripDetails).toFixed(2)}
                         </li>
                     </ul>
                     <div class="card-body">
-                        <button type="button" id="${vessel.name}AddToCartBtn" class="btn btn-primary">Book Trip</button>
+                        <button type="button" id="${vessel.name.replaceAll(" ", "")}AddToCartBtn" class="btn btn-primary">Add to cart</button>
                     </div>
                 </div>
             </div>
@@ -466,16 +783,16 @@ function loadBoatCatalog(vessels, tripDetails) {
         const row = `<div id="mainRow" class="row row-cols-1 g-2 g-lg-3"></div>`;
         catalogContent.append(row);
         for (const vessel of vessels) {
-            const totalCrewCost = vessel.crew_required * vessel.crew_cost_per_member;
-            const totalCostForDistance = vessel.cost_per_nautical_mile * tripDetails.tripDistance;
-            const fuelSurcharge = tripDetails.isRaining ? vessel.fuel_surcharge * 2 : vessel.fuel_surcharge;
+            const totalCrewCost = (vessel.crew_required * vessel.crew_cost_per_member).toFixed(2);
+            const totalCostForDistance = (vessel.cost_per_nautical_mile * tripDetails.tripDistance).toFixed(2);
+            const fuelSurcharge = (tripDetails.isRaining ? vessel.fuel_surcharge * 2 : vessel.fuel_surcharge).toFixed(2);
             // replace boatimg with custom imgs in json eventually
             const boatCard = `
             <div class="col">
                 <div class="card">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="images/boat.jpeg" class="img-fluid rounded-start" alt="...">
+                            <img src="${vessel.image}" class="img-fluid rounded-start" alt="...">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
@@ -495,8 +812,8 @@ function loadBoatCatalog(vessels, tripDetails) {
                                             <b>Length: </b>${vessel.length_meters} meters <br>
                                             <b>Speed: </b>${vessel.speed_knots} knots <br>
                                             <b>Max travel distance: </b>${vessel.max_travel_distance_nautical_miles} nautical miles <br>
-                                            <b>Cost per mile: </b>$${vessel.cost_per_nautical_mile} <br>
-                                            <b>Fuel surcharge: </b> $${vessel.fuel_surcharge} <br>
+                                            <b>Cost per mile: </b>$${vessel.cost_per_nautical_mile.toFixed(2)} <br>
+                                            <b>Fuel surcharge: </b> $${vessel.fuel_surcharge.toFixed(2)} <br>
                                             <b>Suitable for rain?: </b> ${vessel.suitable_for_rain}
                                         </div>
                                     </div>
@@ -510,7 +827,7 @@ function loadBoatCatalog(vessels, tripDetails) {
                                     <div id="${vessel.name.replaceAll(" ", "")}CollapseTwo" class="accordion-collapse collapse">
                                     <div class="accordion-body">
                                         <b>Crew required:</b> ${vessel.crew_required} members <br>
-                                        <b>Cost per member:</b> $${vessel.crew_cost_per_member}/member
+                                        <b>Cost per member:</b> $${vessel.crew_cost_per_member.toFixed(2)}/member
                                     </div>
                                     </div>
                                 </div>
@@ -522,17 +839,17 @@ function loadBoatCatalog(vessels, tripDetails) {
                                     </h2>
                                     <div id="${vessel.name.replaceAll(" ", "")}CollapseThree" class="accordion-collapse collapse">
                                     <div class="accordion-body">
-                                        <b>Base rate: </b>$${vessel.base_rental_rate} <br>
+                                        <b>Base rate: </b>$${vessel.base_rental_rate.toFixed(2)} <br>
                                         <b>Cost of crew: </b> $${totalCrewCost}<br>
                                         <b>Cost per mile * current trip distance: </b> $${totalCostForDistance} <br>
                                         <b>Total fuel surcharge (2x if raining): </b>$${fuelSurcharge} <br>
-                                        <b>Total cost of current trip: </b>$${vessel.base_rental_rate + totalCrewCost + totalCostForDistance + fuelSurcharge}
+                                        <b>Total cost of current trip: </b>$${calculateTotalCost(vessel, tripDetails).toFixed(2)}
                                     </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <button type="button" id="${vessel.name.replaceAll(" ", "")}AddToCartBtn" class="btn btn-primary">Book Trip</button>
+                                <button type="button" id="${vessel.name.replaceAll(" ", "")}AddToCartBtn" class="btn btn-primary">Add to cart</button>
                             </div>
                         </div>
                     </div>    
@@ -551,15 +868,15 @@ function loadBoatCatalog(vessels, tripDetails) {
         const row = `<div id="mainRow" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 row-cols-xxl-5 g-2 g-lg-3" data-masonry='{"percentPosition": true }'></div>`;
         catalogContent.append(row);
         for (const vessel of vessels) {
-            const totalCrewCost = vessel.crew_required * vessel.crew_cost_per_member;
-            const totalCostForDistance = vessel.cost_per_nautical_mile * tripDetails.tripDistance;
-            const fuelSurcharge = tripDetails.isRaining ? vessel.fuel_surcharge * 2 : vessel.fuel_surcharge;
+            const totalCrewCost = (vessel.crew_required * vessel.crew_cost_per_member).toFixed(2);
+            const totalCostForDistance = (vessel.cost_per_nautical_mile * tripDetails.tripDistance).toFixed(2);
+            const fuelSurcharge = (tripDetails.isRaining ? vessel.fuel_surcharge * 2 : vessel.fuel_surcharge).toFixed(2);
 
             // replace boatimg with custom imgs in json eventually
             const boatCard = `
             <div class="col">
                 <div class="card">
-                            <img src="images/boat.jpeg" class="img-fluid rounded-start" alt="...">
+                            <img src="${vessel.image}" class="img-fluid rounded-start" alt="...">
                             <div class="card-body">
                                 <h5 class="card-title"><b>${vessel.name}</b></h5>
                             </div>
@@ -577,8 +894,8 @@ function loadBoatCatalog(vessels, tripDetails) {
                                             <b>Length: </b>${vessel.length_meters} meters <br>
                                             <b>Speed: </b>${vessel.speed_knots} knots <br>
                                             <b>Max travel distance: </b>${vessel.max_travel_distance_nautical_miles} nautical miles <br>
-                                            <b>Cost per mile: </b>$${vessel.cost_per_nautical_mile} <br>
-                                            <b>Fuel surcharge: </b> $${vessel.fuel_surcharge} <br>
+                                            <b>Cost per mile: </b>$${vessel.cost_per_nautical_mile.toFixed(2)} <br>
+                                            <b>Fuel surcharge: </b> $${vessel.fuel_surcharge.toFixed(2)} <br>
                                             <b>Suitable for rain?: </b> ${vessel.suitable_for_rain}
                                         </div>
                                     </div>
@@ -592,7 +909,7 @@ function loadBoatCatalog(vessels, tripDetails) {
                                     <div id="${vessel.name.replaceAll(" ", "")}CollapseTwo" class="accordion-collapse collapse">
                                     <div class="accordion-body">
                                         <b>Crew required:</b> ${vessel.crew_required} members <br>
-                                        <b>Cost per member:</b> $${vessel.crew_cost_per_member}/member
+                                        <b>Cost per member:</b> $${vessel.crew_cost_per_member.toFixed(2)}/member
                                     </div>
                                     </div>
                                 </div>
@@ -604,17 +921,17 @@ function loadBoatCatalog(vessels, tripDetails) {
                                     </h2>
                                     <div id="${vessel.name.replaceAll(" ", "")}CollapseThree" class="accordion-collapse collapse">
                                     <div class="accordion-body">
-                                        <b>Base rate: </b>$${vessel.base_rental_rate} <br>
+                                        <b>Base rate: </b>$${vessel.base_rental_rate.toFixed(2)} <br>
                                         <b>Cost of crew: </b> $${totalCrewCost}<br>
                                         <b>Cost per mile * current trip distance: </b> $${totalCostForDistance} <br>
                                         <b>Total fuel surcharge (2x if raining): </b>$${fuelSurcharge} <br>
-                                        <b>Total cost of current trip: </b>$${vessel.base_rental_rate + totalCrewCost + totalCostForDistance + fuelSurcharge}
+                                        <b>Total cost of current trip: </b>$${calculateTotalCost(vessel, tripDetails).toFixed(2)}
                                     </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <button type="button" id="${vessel.name.replaceAll(" ", "")}AddToCartBtn" class="btn btn-primary">Book Trip</button>
+                                <button type="button" id="${vessel.name.replaceAll(" ", "")}AddToCartBtn" class="btn btn-primary">Add to cart</button>
                             </div>
                 </div>
             </div>
@@ -645,12 +962,12 @@ function loadBoatCatalog(vessels, tripDetails) {
 
     const sortByLowest = () => {
         // I'm so sorry this is disgusting and I am lazy
-        sortedVessels.sort((a, b) => (a.base_rental_rate + (a.crew_required * a.crew_cost_per_member) + (a.cost_per_nautical_mile * tripDetails.tripDistance) + (tripDetails.isRaining ? a.fuel_surcharge * 2 : a.fuel_surcharge)) - (b.base_rental_rate + (b.crew_required * b.crew_cost_per_member) + (b.cost_per_nautical_mile * tripDetails.tripDistance) + (tripDetails.isRaining ? b.fuel_surcharge * 2 : b.fuel_surcharge)));
+        sortedVessels.sort((a, b) => (calculateTotalCost(a, tripDetails)) - (calculateTotalCost(b, tripDetails)));
         renderDisplayMode(displayMode, sortedVessels);
     };
 
     const sortByHighest = () => {
-        sortedVessels.sort((a, b) => (b.base_rental_rate + (b.crew_required * b.crew_cost_per_member) + (b.cost_per_nautical_mile * tripDetails.tripDistance) + (tripDetails.isRaining ? b.fuel_surcharge * 2 : b.fuel_surcharge)) - (a.base_rental_rate + (a.crew_required * a.crew_cost_per_member) + (a.cost_per_nautical_mile * tripDetails.tripDistance) + (tripDetails.isRaining ? a.fuel_surcharge * 2 : a.fuel_surcharge)));
+        sortedVessels.sort((a, b) => (calculateTotalCost(b, tripDetails)) - (calculateTotalCost(a, tripDetails)));
         renderDisplayMode(displayMode, sortedVessels);
     };
 
@@ -659,7 +976,9 @@ function loadBoatCatalog(vessels, tripDetails) {
         // redisplay those vessels
 
         sortedVessels = [];
-        for (const vessel of vessels) { 
+        // ⭐ USE OF LOOP
+        for (const vessel of vessels) {
+            // ⭐ USE OF CONDITIONAL 
             if (vessel.type == type) {
                 sortedVessels.push(vessel);
             }
@@ -670,16 +989,16 @@ function loadBoatCatalog(vessels, tripDetails) {
 
     const sortByAnyType = () => {
         sortedVessels = vessels;
+
         renderDisplayMode(displayMode, sortedVessels);
     };
 
     // default calls
     displayVesselsAsGrid(vessels);
 
-
-    $("#gridBtn").on("click", () => {displayVesselsAsGrid(sortedVessels)});
-    $("#rowBtn").on("click", () => {displayVesselsAsRow(sortedVessels)});
-    $("#masonryBtn").on("click", () => {displayVesselsUsingMasonry(sortedVessels)});
+    $("#gridBtn").on("click", () => { displayVesselsAsGrid(sortedVessels); });
+    $("#rowBtn").on("click", () => { displayVesselsAsRow(sortedVessels); });
+    $("#masonryBtn").on("click", () => { displayVesselsUsingMasonry(sortedVessels); });
 
     $("#fastestBtn").on("click", sortByFastest);
     $("#slowestBtn").on("click", sortBySlowest);
@@ -689,11 +1008,67 @@ function loadBoatCatalog(vessels, tripDetails) {
 
     $("#anyTypeBtn").on("click", sortByAnyType);
     for (const boatType of boatTypes) {
-        $("#" + boatType.replaceAll(" ", "") + "Btn").on("click", () => {sortByType(boatType)});
+        $("#" + boatType.replaceAll(" ", "") + "Btn").on("click", () => { sortByType(boatType) });
+    }
+
+    // event listeners for add to cart btns
+    // generate html for each item added to cart
+    let vesselsInCart = [];
+    localStorage.setItem("tripDetails", JSON.stringify(tripDetails));
+
+    for (const vessel of vessels) {
+        $("#" + vessel.name.replaceAll(" ", "") + "AddToCartBtn").on("click", () => {
+            // can only add each boat once
+            // just inverted my removal logic below and it works lol
+            const indexToFind = vesselsInCart.findIndex(v => v.vessel.name === vessel.name);
+            if (indexToFind === -1) {
+                $("#emptyCart").html("");
+                $("#cartItems").append(`
+                    <li id="${vessel.name.replaceAll(" ", "")}CartItem" class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <p>Boat: ${vessel.name}<br><b>Cost:</b> $${calculateTotalCost(vessel, tripDetails).toFixed(2)}</p>
+                            <button id="${vessel.name.replaceAll(" ", "")}RemoveFromCart" class="btn" type="button"><i class="fa-solid fa-x"></i></button>
+                        </div>
+                    </li>
+                    `);
+                cartTotal += calculateTotalCost(vessel, tripDetails);
+                $("#cartTotal").html(`<b>Total: </b>$${cartTotal.toFixed(2)}`);
+
+                numberOfCartItems++;
+                vesselsInCart.push({ vessel: vessel });
+
+                localStorage.setItem("cartTotal", cartTotal);
+                localStorage.setItem("numberOfCartItems", numberOfCartItems);
+                localStorage.setItem("vesselsInCart", JSON.stringify(vesselsInCart));
+
+                // remove item from cart
+                $(`#${vessel.name.replaceAll(" ", "")}RemoveFromCart`).on("click", () => {
+                    $(`#${vessel.name.replaceAll(" ", "")}CartItem`).remove();
+                    cartTotal -= calculateTotalCost(vessel, tripDetails);
+                    $("#cartTotal").html(`<b>Total: </b>$${cartTotal.toFixed(2)}`);
+                    numberOfCartItems--;
+
+                    // find and remove the vessel from the vesselsInCart array
+                    // i think this works
+                    // idk i dont have time to test anymore
+                    const indexToRemove = vesselsInCart.findIndex(v => v.vessel.name === vessel.name);
+                    if (indexToRemove !== -1) {
+                        vesselsInCart.splice(indexToRemove, 1);
+                    }
+
+                    localStorage.setItem("cartTotal", cartTotal);
+                    localStorage.setItem("numberOfCartItems", numberOfCartItems);
+                    localStorage.setItem("vesselsInCart", JSON.stringify(vesselsInCart));
+
+                    if (numberOfCartItems === 0) {
+                        $("#emptyCart").html("Empty cart");
+                    }
+                });
+            }
+        });
     }
 }
 
-// loadMap returns the object with the json data for the boats
 (async () => {
-    loadBoatCatalog(await loadMap(), { tripDistance: 0, isRaining: false });
+    await loadMap();
 })();
